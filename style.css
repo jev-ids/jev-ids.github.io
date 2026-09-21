@@ -1,0 +1,407 @@
+/* Jev IDS site — the Terminal system of the Figma page "Website".
+   Dark is the default; the light palette is the same system on paper. */
+
+/* Semantic tokens (T0 · Fundamentos) plus the three figure colors (T2),
+   one per detector, so a chart and its table always agree. */
+:root {
+  --bg: #0b0f0e;
+  --surface: #121917;
+  --text: #e9f2ec;
+  --muted: #8e9a93;
+  --line: #1e6b3f;
+  --phosphor: #3dff8a;
+  --grid: #1e6b3f;
+  --prompt: #1e6b3f;
+  --jev: #3dff8a;
+  --llm: #ffb454;
+  --rf: #6ec1ff;
+  --mono:
+    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans:
+    Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+    sans-serif;
+}
+
+/* Light mode: phosphor turns into the dark green #0B6B3A so text on paper keeps
+   its contrast, and each figure color darkens to its paper twin. */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #e9f2ec;
+    --surface: #ffffff;
+    --text: #0b0f0e;
+    --muted: #5f6b65;
+    --line: #b7d3c2;
+    --phosphor: #0b6b3a;
+    --grid: #d5ded9;
+    /* The dim token's paper twin is too pale for a glyph, so on light paper the
+       lockup's prompt borrows the muted grey and stays readable. */
+    --prompt: #5f6b65;
+    --jev: #0b6b3a;
+    --llm: #b36b00;
+    --rf: #1f6fb2;
+  }
+}
+
+/* Page frame: one column, 16 px gutters at every width, nothing wider than the
+   viewport so narrow screens never scroll sideways. */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 400 16px/1.6 var(--sans);
+  -webkit-text-size-adjust: 100%;
+}
+
+header,
+main,
+footer {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+section {
+  padding: 40px 0;
+  border-top: 1px solid var(--line);
+}
+
+/* Header: the horizontal lockup on the left, the outbound links on the right,
+   wrapping to two lines when there is no room. */
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* T1 horizontal lockup: a rounded box with a dim border, ">" dim, "jev" in
+   paper, "_ids" and the cursor in phosphor. */
+.lockup {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: 700 18px/1.2 var(--mono);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lockup-prompt {
+  color: var(--prompt);
+  margin-right: 2px;
+}
+
+.lockup-name {
+  color: var(--text);
+}
+
+.lockup-accent,
+.cursor {
+  color: var(--phosphor);
+}
+
+/* The cursor block breathes slowly, and holds still for anyone who asked the
+   system for less motion. */
+.cursor {
+  animation: blink 1.6s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+  }
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  font: 500 14px/1.4 var(--mono);
+}
+
+/* Links carry phosphor everywhere; the underline sits clear of the baseline. */
+a {
+  color: var(--phosphor);
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--phosphor);
+  outline-offset: 2px;
+}
+
+/* Type scale (T0): display, H1 and H2 in Plex Mono Bold, running text in Inter.
+   The display line shrinks with the viewport instead of overflowing it. */
+h1 {
+  margin: 8px 0 24px;
+  font: 700 clamp(30px, 8.5vw, 48px) / 1.12 var(--mono);
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  margin: 0 0 16px;
+  font: 700 20px/1.3 var(--mono);
+}
+
+/* The prompt glyph before every section title keeps the page reading like a log. */
+h2::before {
+  content: "> ";
+  color: var(--phosphor);
+}
+
+h3 {
+  margin: 32px 0 12px;
+  font: 700 16px/1.3 var(--mono);
+}
+
+.hero {
+  padding: 48px 0 40px;
+  border-top: 0;
+}
+
+/* The tagline is the one long sentence on the page, so it gets a larger size
+   and a measure short enough to read in one sweep. */
+.lede {
+  max-width: 34em;
+  font-size: clamp(17px, 2.4vw, 20px);
+}
+
+.headline {
+  max-width: 34em;
+  font: 500 15px/1.6 var(--mono);
+  color: var(--muted);
+}
+
+p,
+li {
+  max-width: 38em;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+/* Inline code and the terminal blocks share the mono face at the T0 code size. */
+code {
+  font-family: var(--mono);
+  font-size: 0.92em;
+}
+
+/* Terminal blocks (T3 · CLI output): surface panel, dim border, attacks and
+   verdicts in phosphor, comments in grey. Long lines scroll inside the block,
+   never the page. */
+.terminal {
+  margin: 24px 0;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow-x: auto;
+  font: 400 14px/1.7 var(--mono);
+  color: var(--text);
+}
+
+.terminal code {
+  font-size: inherit;
+}
+
+/* The comment marker lives in CSS so the markup holds only the words. */
+.c {
+  color: var(--muted);
+}
+
+.c::before {
+  content: "# ";
+}
+
+.a {
+  color: var(--phosphor);
+}
+
+/* The ASCII diagram is drawn on a character grid 85 columns wide. One notch
+   smaller lets it fit a desktop column whole; on a phone it scrolls inside its
+   own box, which beats shrinking it past reading size. */
+.wide {
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+/* Evidence table (T2): mono, digits right-aligned, a color marker left of each
+   detector name, thin rules, no zebra. */
+.scroll-x {
+  overflow-x: auto;
+  margin: 24px 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 620px;
+  font: 400 13px/1.5 var(--mono);
+}
+
+caption {
+  margin-bottom: 10px;
+  text-align: left;
+  font: 500 12px/1.4 var(--mono);
+  color: var(--muted);
+}
+
+th,
+td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+thead th {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Numbers align by themselves with tabular figures, so no decimal trickery. */
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+tbody strong {
+  font-weight: 700;
+  color: var(--phosphor);
+}
+
+.mut {
+  color: var(--muted);
+}
+
+/* One square of the detector's color, left of its name, in the table and in
+   the figure rows alike. */
+.marker {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  vertical-align: 1px;
+}
+
+.marker.jev {
+  background: var(--jev);
+}
+
+.marker.llm {
+  background: var(--llm);
+}
+
+.marker.rf {
+  background: var(--rf);
+}
+
+/* Figures (T2): thin grid, no shadow, no gradient, mono labels, legend on the
+   right. Two side by side when there is room, stacked when there is not. */
+.figures {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;
+  margin: 32px 0;
+}
+
+@media (min-width: 720px) {
+  .figures {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+figure {
+  margin: 0;
+  max-width: 420px;
+}
+
+figure svg {
+  width: 100%;
+  height: auto;
+}
+
+figcaption {
+  font: 500 12px/1.4 var(--mono);
+  color: var(--muted);
+}
+
+.grid line {
+  stroke: var(--grid);
+  stroke-width: 1;
+}
+
+svg text {
+  font-family: var(--mono);
+}
+
+.tick {
+  font-size: 11px;
+  fill: var(--muted);
+}
+
+/* Values and row names keep the body color: the detector color lives in the
+   mark, which only has to pass the 3:1 bar for graphics. */
+.value {
+  font-size: 10px;
+  fill: var(--text);
+}
+
+.row,
+.legend text {
+  font-size: 11px;
+  fill: var(--text);
+}
+
+.f-jev {
+  fill: var(--jev);
+}
+
+.f-llm {
+  fill: var(--llm);
+}
+
+.f-rf {
+  fill: var(--rf);
+}
+
+/* Footer: the independence notice, the links again, and the original motto. */
+footer {
+  padding-top: 32px;
+  padding-bottom: 48px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+footer nav {
+  margin: 16px 0;
+}
+
+.motto {
+  font: 500 14px/1.4 var(--mono);
+  color: var(--phosphor);
+}

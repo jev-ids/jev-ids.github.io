@@ -1,0 +1,81 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 1200 630"
+  width="1200"
+  height="630"
+  role="img"
+  aria-label="Jev IDS — um fluxo. uma resposta. — github.com/jev-ids/jev-ids"
+>
+  <title>Jev IDS — um fluxo. uma resposta.</title>
+  <!-- Social card (T3 · item 4): the square mark on the left, the name and the
+       motto on the right, the repository URL below. Text keeps a Menlo fallback
+       because the card is rasterised outside the browser, where IBM Plex Mono
+       may not be installed. -->
+  <rect width="1200" height="630" fill="#0B0F0E" />
+
+  <!-- T1 square mark: bg fill, dim border, "jev" in paper over "ids" in
+       phosphor, closed by the phosphor cursor block. -->
+  <rect
+    x="96"
+    y="175"
+    width="280"
+    height="280"
+    rx="28"
+    fill="#0B0F0E"
+    stroke="#1E6B3F"
+    stroke-width="4"
+  />
+  <text
+    x="136"
+    y="296"
+    font-family="IBM Plex Mono, Menlo, monospace"
+    font-size="84"
+    font-weight="700"
+    fill="#E9F2EC"
+  >
+    jev
+  </text>
+  <text
+    x="136"
+    y="392"
+    font-family="IBM Plex Mono, Menlo, monospace"
+    font-size="84"
+    font-weight="700"
+    fill="#3DFF8A"
+  >
+    ids
+  </text>
+  <rect x="295" y="334" width="30" height="58" fill="#3DFF8A" />
+
+  <!-- Right column: the name, the motto, a dim rule, and the repository. -->
+  <text
+    x="440"
+    y="290"
+    font-family="IBM Plex Mono, Menlo, monospace"
+    font-size="96"
+    font-weight="700"
+    fill="#E9F2EC"
+  >
+    JEV IDS
+  </text>
+  <text
+    x="440"
+    y="352"
+    font-family="Inter, Helvetica Neue, Helvetica, Arial, sans-serif"
+    font-size="38"
+    fill="#8E9A93"
+  >
+    um fluxo. uma resposta.
+  </text>
+  <line x1="440" y1="392" x2="908" y2="392" stroke="#1E6B3F" stroke-width="2" />
+  <text
+    x="440"
+    y="440"
+    font-family="IBM Plex Mono, Menlo, monospace"
+    font-size="30"
+    font-weight="500"
+    fill="#3DFF8A"
+  >
+    github.com/jev-ids/jev-ids
+  </text>
+</svg>
