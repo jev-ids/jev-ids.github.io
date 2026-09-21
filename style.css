@@ -189,6 +189,10 @@ h3 {
   color: var(--muted);
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+
 p,
 li {
   max-width: 38em;
@@ -237,14 +241,6 @@ code {
 
 .a {
   color: var(--phosphor);
-}
-
-/* The ASCII diagram is drawn on a character grid 85 columns wide. One notch
-   smaller lets it fit a desktop column whole; on a phone it scrolls inside its
-   own box, which beats shrinking it past reading size. */
-.wide {
-  font-size: 13px;
-  line-height: 1.2;
 }
 
 /* Evidence table (T2): mono, digits right-aligned, a color marker left of each
@@ -297,8 +293,7 @@ tbody strong {
   color: var(--muted);
 }
 
-/* One square of the detector's color, left of its name, in the table and in
-   the figure rows alike. */
+/* One square of the detector's color, left of its name in the table. */
 .marker {
   display: inline-block;
   width: 8px;
@@ -319,76 +314,130 @@ tbody strong {
   background: var(--rf);
 }
 
-/* Figures (T2): thin grid, no shadow, no gradient, mono labels, legend on the
-   right. Two side by side when there is room, stacked when there is not. */
-.figures {
+/* The request diagram: three surface cards, one per word of the display line,
+   joined by phosphor arrows. Stacked with "↓" on a phone, in a row with "→"
+   from 720 px up. */
+.flow {
   display: grid;
-  gap: 24px;
-  grid-template-columns: 1fr;
-  margin: 32px 0;
+  gap: 36px;
+  margin: 28px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flow li {
+  position: relative;
+  max-width: none;
+  margin: 0;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.flow h3 {
+  margin: 0 0 8px;
+}
+
+.step-index {
+  margin-right: 10px;
+  color: var(--phosphor);
+  font-weight: 500;
+}
+
+.flow p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.answers {
+  font: 400 14px/1.7 var(--mono);
+}
+
+.flow li + li::before {
+  content: "↓";
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--phosphor);
+  font: 700 18px/1 var(--mono);
 }
 
 @media (min-width: 720px) {
-  .figures {
-    grid-template-columns: 1fr 1fr;
+  .flow {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+
+  .flow li + li::before {
+    content: "→";
+    top: 50%;
+    left: -20px;
   }
 }
 
-figure {
+/* Team cards: avatar, name and GitHub handle, the whole card one link. The
+   border lights up in phosphor on hover and focus. */
+.team {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.team li {
+  max-width: none;
   margin: 0;
-  max-width: 420px;
 }
 
-figure svg {
-  width: 100%;
-  height: auto;
+.team a {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  height: 100%;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
 }
 
-figcaption {
-  font: 500 12px/1.4 var(--mono);
-  color: var(--muted);
+.team a:hover,
+.team a:focus-visible {
+  border-color: var(--phosphor);
 }
 
-.grid line {
-  stroke: var(--grid);
-  stroke-width: 1;
+.team img {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--bg);
 }
 
-svg text {
-  font-family: var(--mono);
+.person {
+  min-width: 0;
 }
 
-.tick {
-  font-size: 11px;
-  fill: var(--muted);
+.person-name {
+  display: block;
+  font: 700 15px/1.3 var(--mono);
 }
 
-/* Values and row names keep the body color: the detector color lives in the
-   mark, which only has to pass the 3:1 bar for graphics. */
-.value {
-  font-size: 10px;
-  fill: var(--text);
+.person-handle {
+  display: block;
+  margin-top: 2px;
+  color: var(--phosphor);
+  font: 500 13px/1.3 var(--mono);
 }
 
-.row,
-.legend text {
-  font-size: 11px;
-  fill: var(--text);
-}
-
-.f-jev {
-  fill: var(--jev);
-}
-
-.f-llm {
-  fill: var(--llm);
-}
-
-.f-rf {
-  fill: var(--rf);
-}
-
-/* Footer: the independence notice, the links again, and the original motto. */
+/* Footer: the independence notice and the links again. The notice may run the
+   full column so it stays on one line on a desktop. */
 footer {
   padding-top: 32px;
   padding-bottom: 48px;
@@ -397,11 +446,10 @@ footer {
   font-size: 14px;
 }
 
-footer nav {
-  margin: 16px 0;
+footer p {
+  max-width: none;
 }
 
-.motto {
-  font: 500 14px/1.4 var(--mono);
-  color: var(--phosphor);
+footer nav {
+  margin: 16px 0;
 }

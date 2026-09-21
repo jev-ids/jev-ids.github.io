@@ -68,18 +68,22 @@
     </header>
 
     <main id="top">
-      <!-- Hero: the display line, the README tagline, the headline result, and one real
-           request shown the way the CLI prints it. No invented run output. -->
+      <!-- Hero: the display line, the tagline, the headline result, and one real
+           request shown the way the CLI prints it. The headline ratios come from the
+           pilot table below: 2,410 / 504 ms, $283 / $74, novel recall 0.838 / 0.547,
+           and 362 / 24 false alarms at k = 1. -->
       <section class="hero" aria-labelledby="hero-title">
         <h1 id="hero-title">one flow.<br />one request.<br />one verdict.</h1>
         <p class="lede">
           An intrusion detection system that asks
           <a href="https://docs.typesafe.ai/introduction">TypeSafe's Jev</a> two
-          typed questions about one network flow and gets a verdict back, with
-          no text to parse.
+          typed questions about one network flow and gets a verdict back,
+          <span class="nowrap">with no text to parse.</span>
         </p>
         <p class="headline">
-          Five labeled flows. F1 0.86 on NSL-KDD. Half a second per verdict.
+          Benchmarked on NSL-KDD against GPT-5.6 and a Random Forest. 4.8×
+          faster, 3.8× cheaper and 1.5× better at catching zero-day attacks than
+          the LLM. 15× fewer false alarms than the forest.
         </p>
 
         <pre
@@ -94,60 +98,65 @@ category    choice   Which category does it belong to?         <span class="a">�
 verdict     <span class="a">attack</span></code></pre>
       </section>
 
-      <!-- The request: the mechanism, straight from the README section of the same name. -->
+      <!-- The request: what a System One Model is and what Jev IDS does with it. -->
       <section aria-labelledby="request-title">
         <h2 id="request-title">the request</h2>
         <p>
-          Jev is a System One Model. It takes a <code>state</code> and typed
-          questions about it and returns typed answers with probabilities
-          instead of generated text. Jev IDS sends one flow per request. The
-          state holds the instructions, the column header, the five category
-          descriptions, the labeled examples and the flow under test. Two
-          questions point at it.
+          Jev IDS runs on a new kind of AI, the System One Model (SOM). Instead
+          of generating text, a SOM takes a state and standardized questions
+          about it and answers each one with a probability. Jev IDS hands it one
+          monitored network flow and gets back one verdict, attack or normal,
+          with the probability behind it.
         </p>
 
-        <pre
-          class="terminal wide"
-          role="img"
-          tabindex="0"
-          aria-label="Diagram: one flow plus k examples per category enter one TypeSafe request, whose state carries instructions, columns, categories, examples and the flow under test; the is_attack question returns p_attack, which is an attack at 0.5 or above, and the category question returns a category and a confidence"
-        ><code>                          one TypeSafe request
-                    ┌────────────────────────────────┐
-flow + k examples   │ state: instructions, columns,  │
-per category ──────►│        categories, examples,   │
-                    │        flows.under_test        │
-                    │ is_attack (noul)               │──► p_attack ──► ≥ 0.5 → attack
-                    │ category  (choice)             │──► category, confidence
-                    └────────────────────────────────┘</code></pre>
+        <!-- The three steps echo the display line. The example values are the first
+             row of the pilot run, the same ones printed in the hero block. -->
+        <ol class="flow" aria-label="How one verdict is produced">
+          <li>
+            <h3><span class="step-index">01</span>one flow</h3>
+            <p>
+              The monitoring record of a single connection: duration, protocol,
+              service, bytes in and out.
+            </p>
+          </li>
+          <li>
+            <h3><span class="step-index">02</span>one request</h3>
+            <p>
+              State: the instructions, a few labeled examples and the flow.
+              Questions: <code>is_attack</code> and <code>category</code>.
+            </p>
+          </li>
+          <li>
+            <h3><span class="step-index">03</span>one verdict</h3>
+            <p class="answers">
+              <span class="a">attack</span> · p_attack 0.82<br /><span class="a"
+                >dos</span
+              >
+              · confidence 0.84
+            </p>
+          </li>
+        </ol>
 
         <p>
-          The verdict is p_attack ≥ 0.5, the same cut for every detector. The
-          whole conversation with Jev lives in one file,
+          Everything Jev is told lives in one versioned file,
           <a
             href="https://github.com/jev-ids/jev-ids/blob/main/prompts/nsl-kdd/jev.json"
             ><code>prompts/nsl-kdd/jev.json</code></a
-          >. Python adds only the flow and the examples, and the sha256 of the
-          file travels in every prediction row as <code>prompt_hash</code>.
-          Examples are labeled by category only, so attack names such as
-          <code>neptune</code> never reach a model.
+          >. Python adds only the flow and the examples, and the file's sha256
+          rides with every prediction, so any verdict traces back to the exact
+          prompt. Examples are labeled by category only; attack names never
+          reach a model. Both questions are answered in parallel over the same
+          state, in one round trip.
         </p>
         <p>
-          The same protocol runs two baselines: an LLM through an Agno agent
-          with a JSON output schema (GPT-5.6 through the ChatGPT Codex backend,
-          or DeepSeek), and a scikit-learn Random Forest trained on the same k
-          examples. Every detector judges the same frozen split with the same
-          examples, drawn from the same seeds.
-        </p>
-        <p>
-          Jev evaluates both questions in parallel over the same state, and it
-          charges for input only: $0.042 per million input tokens, output free.
-          A k = 1 request is about 1,800 tokens, so a million verdicts cost
-          about $74 at list price.
+          Two baselines follow the same protocol: an LLM agent with a JSON
+          output schema and a scikit-learn Random Forest. Same frozen split,
+          same examples, same seeds.
         </p>
       </section>
 
-      <!-- Evidence: the pilot table verbatim, two small figures drawn from the same rows,
-           the paired comparison and the limits. Every number here is in the README. -->
+      <!-- Evidence: the pilot table verbatim, the paired comparison and the limits.
+           Every number here is in the README or in the pilot predictions. -->
       <section aria-labelledby="evidence-title">
         <h2 id="evidence-title">evidence</h2>
         <p>
@@ -263,157 +272,39 @@ per category ──────►│        categories, examples,   │
           </table>
         </div>
 
-        <!-- Two figures, T2 rules: one color per detector, thin grid, no shadow, no gradient,
-             mono labels, legend on the right, few ticks. Both read the table above. -->
-        <div class="figures">
-          <figure>
-            <svg
-              viewBox="0 0 360 260"
-              role="img"
-              aria-label="Grouped bars of F1 by detector. At k = 1: jev 0.859, gpt-5.6 0.776, random forest 0.728. At k = 2: jev 0.839, gpt-5.6 0.807, random forest 0.766."
-            >
-              <!-- Grid and axis: three ticks only, thin lines in the line token. -->
-              <g class="grid">
-                <line x1="34" y1="30" x2="232" y2="30" />
-                <line x1="34" y1="117.5" x2="232" y2="117.5" />
-                <line x1="34" y1="205" x2="232" y2="205" />
-              </g>
-              <g class="tick" text-anchor="end">
-                <text x="28" y="33.5">1.0</text>
-                <text x="28" y="121">0.5</text>
-                <text x="28" y="208.5">0</text>
-              </g>
-
-              <!-- k = 1 group: jev, gpt-5.6, random forest. y = 205 − 175 × F1. -->
-              <rect class="f-jev" x="40.5" y="54.7" width="24" height="150.3" />
-              <rect class="f-llm" x="71.5" y="69.2" width="24" height="135.8" />
-              <rect class="f-rf" x="102.5" y="77.6" width="24" height="127.4" />
-              <g class="value" text-anchor="middle">
-                <text x="52.5" y="49">0.859</text>
-                <text x="83.5" y="63.5">0.776</text>
-                <text x="114.5" y="71.9">0.728</text>
-              </g>
-
-              <!-- k = 2 group, same order. -->
-              <rect
-                class="f-jev"
-                x="139.5"
-                y="58.2"
-                width="24"
-                height="146.8"
-              />
-              <rect
-                class="f-llm"
-                x="170.5"
-                y="63.8"
-                width="24"
-                height="141.2"
-              />
-              <rect class="f-rf" x="201.5" y="70.9" width="24" height="134.1" />
-              <g class="value" text-anchor="middle">
-                <text x="151.5" y="52.5">0.839</text>
-                <text x="182.5" y="58.1">0.807</text>
-                <text x="213.5" y="65.2">0.766</text>
-              </g>
-
-              <g class="tick" text-anchor="middle">
-                <text x="83.5" y="222">k = 1</text>
-                <text x="182.5" y="222">k = 2</text>
-              </g>
-
-              <!-- Legend on the right, one swatch per detector. -->
-              <g class="legend">
-                <rect class="f-jev" x="246" y="55" width="9" height="9" />
-                <text x="261" y="63">jev</text>
-                <rect class="f-llm" x="246" y="77" width="9" height="9" />
-                <text x="261" y="85">gpt-5.6</text>
-                <rect class="f-rf" x="246" y="99" width="9" height="9" />
-                <text x="261" y="107">random forest</text>
-              </g>
-            </svg>
-            <figcaption>f1 by detector, k = 1 and k = 2</figcaption>
-          </figure>
-
-          <figure>
-            <svg
-              viewBox="0 0 360 260"
-              role="img"
-              aria-label="Latency per flow at k = 1 on a logarithmic scale: jev 504 milliseconds, gpt-5.6 2,410 milliseconds, random forest 3 milliseconds."
-            >
-              <!-- One vertical gridline per decade, from 1 ms to 10,000 ms. The
-                   box is as tall as the F1 chart's, so both captions line up when
-                   the two figures sit side by side. -->
-              <g class="grid">
-                <line x1="112" y1="40" x2="112" y2="190" />
-                <line x1="159" y1="40" x2="159" y2="190" />
-                <line x1="206" y1="40" x2="206" y2="190" />
-                <line x1="253" y1="40" x2="253" y2="190" />
-                <line x1="300" y1="40" x2="300" y2="190" />
-              </g>
-
-              <!-- One row per detector: color marker, name, dot at x = 112 + log10(ms) × 47. -->
-              <rect class="f-jev" x="2" y="55" width="9" height="9" />
-              <text class="row" x="16" y="63">jev</text>
-              <circle class="f-jev" cx="239" cy="60" r="5" />
-              <text class="value" x="248" y="63.5">504 ms</text>
-
-              <rect class="f-llm" x="2" y="103" width="9" height="9" />
-              <text class="row" x="16" y="111">gpt-5.6</text>
-              <circle class="f-llm" cx="271" cy="108" r="5" />
-              <text class="value" x="280" y="111.5">2,410 ms</text>
-
-              <rect class="f-rf" x="2" y="151" width="9" height="9" />
-              <text class="row" x="16" y="159">random forest</text>
-              <circle class="f-rf" cx="134" cy="156" r="5" />
-              <text class="value" x="143" y="159.5">3 ms</text>
-
-              <g class="tick" text-anchor="middle">
-                <text x="112" y="212">1</text>
-                <text x="159" y="212">10</text>
-                <text x="206" y="212">100</text>
-                <text x="253" y="212">1k</text>
-                <text x="300" y="212">10k</text>
-              </g>
-              <text class="tick" x="112" y="238">ms per flow, log scale</text>
-            </svg>
-            <figcaption>latency per flow at k = 1</figcaption>
-          </figure>
-        </div>
-
         <p>
           Jev against the Random Forest at k = 1: of 900 paired verdicts, 439
           differ. Jev is right in 338 of them and the forest in 101 (McNemar p ≈
           6 × 10⁻³¹). A forest trained on five rows calls almost everything an
-          attack, which is why its recall is perfect and its precision is not.
+          attack, which is why its recall is perfect and its precision is not:
+          on the 420 benign flows it raised 362 false alarms, Jev 24.
         </p>
 
         <h3>limits worth knowing</h3>
         <ul>
           <li>
-            These are pilot numbers, taken to settle the protocol. The reported
-            results will come from the disjoint <code>paper</code> split with k
-            up to 16. NF-UQ-NIDS-v2 has a card and a preparation script and no
-            run yet.
+            Pilot numbers, taken to settle the protocol. Final results will come
+            from the disjoint <code>paper</code> split with k up to 16.
+            NF-UQ-NIDS-v2 has not run yet.
           </li>
           <li>
-            Latency is the wall clock around the successful HTTP call, from the
-            client through the Vercel AI Gateway. The gateway rate-limits often:
-            1,350 of the 1,800 Jev rows needed at least one retry, and the
-            retries are not in the latency.
+            Latency is the wall clock of the successful HTTP call through the
+            Vercel AI Gateway. 1,350 of the 1,800 Jev rows needed a retry, and
+            retries are not counted.
           </li>
           <li>
-            Cost is tokens times list prices, not what was billed. Jev was free
-            under a promotion until 2026-09-25, and GPT-5.6 ran through the
-            ChatGPT Codex backend, priced here at the public API list rate.
+            Cost is tokens times list price, not what was billed: $0.042 per
+            million input tokens for Jev, output free. Jev was free under a
+            promotion until 2026-09-25, and GPT-5.6 ran through the ChatGPT
+            Codex backend at the public API rate.
           </li>
           <li>
-            The gateway masks Jev's version: it reports
-            <code>typesafe-ai/jev</code>, while TypeSafe direct reports
-            <code>jev-1.13.0</code>. The run date in <code>config.json</code> is
-            the only pin.
+            The gateway masks Jev's version as <code>typesafe-ai/jev</code>;
+            TypeSafe direct reports <code>jev-1.13.0</code>. The run date is the
+            only pin.
           </li>
           <li>
-            Jev's <code>noul</code> answer carries no confidence. Only the
+            Jev's <code>noul</code> answer carries no confidence; only the
             <code>choice</code> answer does.
           </li>
         </ul>
@@ -452,13 +343,66 @@ uv run jev-ids run --dataset data/nsl-kdd/dataset.json --detector jev --split sm
           <code>responses.jsonl</code>.
         </p>
       </section>
+
+      <!-- The team: one card per person, linking to their GitHub profile. Avatars are
+           served by GitHub from the same profiles. -->
+      <section aria-labelledby="team-title">
+        <h2 id="team-title">the team</h2>
+        <ul class="team">
+          <li>
+            <a href="https://github.com/paulosevero/">
+              <img
+                src="https://github.com/paulosevero.png?size=160"
+                alt=""
+                width="64"
+                height="64"
+                loading="lazy"
+              />
+              <span class="person">
+                <span class="person-name">Paulo Severo</span>
+                <span class="person-handle">@paulosevero</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/sequincozes/">
+              <img
+                src="https://github.com/sequincozes.png?size=160"
+                alt=""
+                width="64"
+                height="64"
+                loading="lazy"
+              />
+              <span class="person">
+                <span class="person-name">Silvio Quincozes</span>
+                <span class="person-handle">@sequincozes</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/amandadiasdev/">
+              <img
+                src="https://github.com/amandadiasdev.png?size=160"
+                alt=""
+                width="64"
+                height="64"
+                loading="lazy"
+              />
+              <span class="person">
+                <span class="person-name">Amanda Dias</span>
+                <span class="person-handle">@amandadiasdev</span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </section>
     </main>
 
-    <!-- Footer: the independence notice, the links again, and the original motto. -->
+    <!-- Footer: the independence notice and the links again. -->
     <footer>
       <p>
         Jev IDS is an independent research project and is not affiliated with
-        TypeSafe or Vercel.
+        <span class="nowrap">TypeSafe or Vercel.</span>
       </p>
       <nav aria-label="Footer links">
         <a href="https://github.com/jev-ids/jev-ids">github</a>
@@ -467,7 +411,6 @@ uv run jev-ids run --dataset data/nsl-kdd/dataset.json --detector jev --split sm
           >glossary</a
         >
       </nav>
-      <p class="motto" lang="pt-BR">um fluxo. uma resposta.</p>
     </footer>
   </body>
 </html>
