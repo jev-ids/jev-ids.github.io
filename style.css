@@ -194,8 +194,9 @@ h3 {
   white-space: nowrap;
 }
 
-/* Headline ratios: a big phosphor number over a short grey label, four in a
-   row when there is room, two by two on a phone. */
+/* Headline ratios: a big phosphor number over a two-line grey label, four in
+   a row when there is room, two by two on a phone. The label breaks only at
+   its <br>, so every item is exactly two lines tall. */
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -222,6 +223,7 @@ h3 {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.4;
+  white-space: nowrap;
 }
 
 p,

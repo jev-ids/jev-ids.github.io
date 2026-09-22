@@ -39,7 +39,7 @@
 
     <!-- The query string changes with every CSS edit, so Pages' 10 minute cache
          never serves an old stylesheet with a new page. -->
-    <link rel="stylesheet" href="style.css?v=20260922b" />
+    <link rel="stylesheet" href="style.css?v=20260922c" />
     <!-- Browser UI (address bar, tab strip) follows the two palettes. -->
     <meta
       name="theme-color"
@@ -84,18 +84,24 @@
         </p>
         <p class="headline">
           Put to the test on NSL-KDD, the classic intrusion detection benchmark,
-          against an LLM (GPT-5.6) and a Random Forest.
+          against an LLM (GPT-5.6 Luna) and a Random Forest.
         </p>
         <ul class="stats" aria-label="Headline results at k = 1">
-          <li><strong>4.8×</strong> <span>faster than GPT-5.6</span></li>
-          <li><strong>3.8×</strong> <span>cheaper than GPT-5.6</span></li>
+          <li>
+            <strong>4.8×</strong>
+            <span>faster per verdict<br />than GPT-5.6 Luna</span>
+          </li>
+          <li>
+            <strong>3.8×</strong>
+            <span>cheaper per verdict<br />than GPT-5.6 Luna</span>
+          </li>
           <li>
             <strong>1.5×</strong>
-            <span>more zero-day attacks caught than GPT-5.6</span>
+            <span>more zero-day attacks<br />caught than GPT-5.6 Luna</span>
           </li>
           <li>
             <strong>15×</strong>
-            <span>fewer false alarms than a Random Forest</span>
+            <span>fewer false alarms<br />than a Random Forest</span>
           </li>
         </ul>
 
