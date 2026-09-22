@@ -277,6 +277,57 @@ code {
   color: var(--phosphor);
 }
 
+/* Integration diagram (T2 rules: one color for the subject, thin lines, no shadow).
+   It keeps its natural width and scrolls on narrow screens, like the table. */
+.pipeline {
+  display: block;
+  width: 100%;
+  min-width: 600px;
+  height: auto;
+}
+
+.pipeline text {
+  font: 400 14px var(--mono);
+  fill: var(--text);
+}
+
+.pipeline .box {
+  fill: var(--surface);
+  stroke: var(--line);
+}
+
+.pipeline .main,
+.pipeline .side {
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.pipeline .main {
+  stroke: var(--muted);
+}
+
+.pipeline .head {
+  fill: var(--muted);
+}
+
+.pipeline .side {
+  stroke: var(--phosphor);
+}
+
+.pipeline .sidehead,
+.pipeline .jev text {
+  fill: var(--phosphor);
+}
+
+.pipeline .jev .box {
+  stroke: var(--phosphor);
+}
+
+.pipeline .label {
+  font-size: 12px;
+  fill: var(--muted);
+}
+
 /* Evidence table (T2): mono, digits right-aligned, a color marker left of each
    detector name, thin rules, no zebra. */
 .scroll-x {

@@ -39,7 +39,7 @@
 
     <!-- The query string changes with every CSS edit, so Pages' 10 minute cache
          never serves an old stylesheet with a new page. -->
-    <link rel="stylesheet" href="style.css?v=20260922c" />
+    <link rel="stylesheet" href="style.css?v=20260922d" />
     <!-- Browser UI (address bar, tab strip) follows the two palettes. -->
     <meta
       name="theme-color"
@@ -373,7 +373,7 @@ uv run jev-ids run --dataset data/nsl-kdd/dataset.json --detector jev --split sm
       </section>
 
       <!-- Bring your own flows: the research-prototype notice, where Jev sits beside a
-           commercial IDS (ASCII, because the mono subset has no box-drawing glyphs) and
+           commercial IDS (an inline SVG on the site's own tokens) and
            the six integration steps. The numbers are the pilot's at k = 1. -->
       <section aria-labelledby="byof-title">
         <h2 id="byof-title">bring your own flows</h2>
@@ -390,15 +390,51 @@ uv run jev-ids run --dataset data/nsl-kdd/dataset.json --detector jev --split sm
           the pipeline, off the packet path, and judges one flow record at a
           time.
         </p>
-        <pre
-          class="terminal"
-          role="img"
-          aria-label="Sensor, exporter, signatures, alerts and SIEM in one line; a side channel leaves the exporter, goes through a queue to jev_ids and returns into the SIEM"
-        ><code>sensor --> exporter --> signatures --> alerts --> SIEM
-               |                                    ^
-               +------> queue --> <span class="a">jev_ids</span> ----------+
-<span class="c">side channel: a second opinion on alerts, a category for the playbook</span>
-<span class="c">and a net behind the signatures</span></code></pre>
+        <div class="scroll-x">
+          <svg
+            class="pipeline"
+            viewBox="0 0 600 166"
+            role="img"
+            aria-labelledby="pipeline-title"
+          >
+            <title id="pipeline-title">
+              Sensor, exporter, signatures, alerts and SIEM in one line; a side
+              channel leaves the exporter, goes through a queue to jev_ids and
+              returns into the SIEM.
+            </title>
+            <rect class="box" x="16" y="24" width="74" height="36" rx="6" />
+            <text x="53" y="47" text-anchor="middle">sensor</text>
+            <rect class="box" x="124" y="24" width="91" height="36" rx="6" />
+            <text x="169.5" y="47" text-anchor="middle">exporter</text>
+            <rect class="box" x="249" y="24" width="108" height="36" rx="6" />
+            <text x="303" y="47" text-anchor="middle">signatures</text>
+            <rect class="box" x="391" y="24" width="74" height="36" rx="6" />
+            <text x="428" y="47" text-anchor="middle">alerts</text>
+            <rect class="box" x="499" y="24" width="58" height="36" rx="6" />
+            <text x="528" y="47" text-anchor="middle">SIEM</text>
+            <line class="main" x1="90" y1="42" x2="116" y2="42" />
+            <polygon class="head" points="116,37 124,42 116,47" />
+            <line class="main" x1="215" y1="42" x2="241" y2="42" />
+            <polygon class="head" points="241,37 249,42 241,47" />
+            <line class="main" x1="357" y1="42" x2="383" y2="42" />
+            <polygon class="head" points="383,37 391,42 383,47" />
+            <line class="main" x1="465" y1="42" x2="491" y2="42" />
+            <polygon class="head" points="491,37 499,42 491,47" />
+            <path class="side" d="M169.5,60 V134 H222" />
+            <polygon class="sidehead" points="222,129 230,134 222,139" />
+            <rect class="box" x="230" y="116" width="66" height="36" rx="6" />
+            <text x="263" y="139" text-anchor="middle">queue</text>
+            <line class="side" x1="296" y1="134" x2="322" y2="134" />
+            <polygon class="sidehead" points="322,129 330,134 322,139" />
+            <g class="jev">
+              <rect class="box" x="330" y="116" width="83" height="36" rx="6" />
+              <text x="371.5" y="139" text-anchor="middle">jev_ids</text>
+            </g>
+            <path class="side" d="M413,134 H528 V68" />
+            <polygon class="sidehead" points="523,68 528,60 533,68" />
+            <text class="label" x="421" y="126">side channel</text>
+          </svg>
+        </div>
         <ul>
           <li>
             <strong>Second opinion on alerts.</strong> Send Jev the flow behind
