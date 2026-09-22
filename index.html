@@ -372,6 +372,112 @@ uv run jev-ids run --dataset data/nsl-kdd/dataset.json --detector jev --split sm
         </p>
       </section>
 
+      <!-- Bring your own flows: the research-prototype notice, where Jev sits beside a
+           commercial IDS (ASCII, because the mono subset has no box-drawing glyphs) and
+           the six integration steps. The numbers are the pilot's at k = 1. -->
+      <section aria-labelledby="byof-title">
+        <h2 id="byof-title">bring your own flows</h2>
+        <p>
+          Jev IDS is an independent research prototype, not a product. Its
+          numbers come from one pilot on NSL-KDD. It can still sit inside a
+          commercial solution, and this is how.
+        </p>
+
+        <h3>where jev fits</h3>
+        <p>
+          A commercial IDS already has sensors, a flow exporter and a signature
+          engine feeding a SIEM. Jev IDS replaces none of them. It sits beside
+          the pipeline, off the packet path, and judges one flow record at a
+          time.
+        </p>
+        <pre
+          class="terminal"
+          role="img"
+          aria-label="Sensor, exporter, signatures, alerts and SIEM in one line; a side channel leaves the exporter, goes through a queue to jev_ids and returns into the SIEM"
+        ><code>sensor --> exporter --> signatures --> alerts --> SIEM
+               |                                    ^
+               +------> queue --> <span class="a">jev_ids</span> ----------+
+<span class="c">side channel: a second opinion on alerts, a category for the playbook, a net behind the signatures</span></code></pre>
+        <ul>
+          <li>
+            <strong>Second opinion on alerts.</strong> Send Jev the flow behind
+            each alert the signature engine raised. <code>p_attack</code> ranks
+            the queue, and the SOC reads the top first. In the pilot, Jev raised
+            24 false alarms on 420 benign flows where a Random Forest raised
+            362.
+          </li>
+          <li>
+            <strong>A net behind the signatures.</strong> Signatures miss what
+            they have never seen. Sample the flows the engine passed as clean,
+            or every flow to a critical asset, and let Jev judge them: it caught
+            84% of attacks of a kind absent from its examples.
+          </li>
+          <li>
+            <strong>A category for the playbook.</strong> The
+            <code>choice</code> answer names the category with a confidence, so
+            the SIEM routes dos, probe, r2l and u2r, or your own taxonomy, to
+            different runbooks with no parser in between.
+          </li>
+          <li>
+            <strong>Coverage from day one.</strong> A new site or tenant has no
+            training set. Jev needs one labeled flow per category, so it covers
+            the segment while a classical model is still collecting data.
+          </li>
+        </ul>
+        <p>
+          Half a second per verdict and a rate-limited gateway make this an
+          asynchronous side channel, fed from the exporter (NetFlow, IPFIX, Zeek
+          <code>conn.log</code>) through a queue, never an inline filter.
+        </p>
+
+        <h3>six steps</h3>
+        <ol>
+          <li>
+            <strong>Get a key.</strong> Jev is served through the Vercel AI
+            Gateway; set <code>AI_GATEWAY_API_KEY</code> in <code>.env</code>.
+            Pricing and terms are TypeSafe's and Vercel's.
+          </li>
+          <li>
+            <strong>Describe your flows.</strong> Write a dataset card like
+            <a
+              href="https://github.com/jev-ids/jev-ids/blob/main/data/nsl-kdd/dataset.json"
+              ><code>data/nsl-kdd/dataset.json</code></a
+            >: the columns your flow exporter emits, in order, which of them are
+            symbolic, your categories and which one is benign.
+          </li>
+          <li>
+            <strong>Write the request.</strong> Copy
+            <a
+              href="https://github.com/jev-ids/jev-ids/blob/main/prompts/nsl-kdd/jev.json"
+              ><code>prompts/nsl-kdd/jev.json</code></a
+            >, replace <code>columns</code> and the category descriptions with
+            yours, and keep the two questions.
+          </li>
+          <li>
+            <strong>Pick examples.</strong> One labeled flow per category from
+            your own network is enough to start; k = 1 is what the pilot used.
+          </li>
+          <li>
+            <strong>Call the detector.</strong>
+            <code>JevDetector(load_prompt(path)).predict(flow, examples)</code>
+            returns <code>p_attack</code>, <code>category_pred</code> and
+            <code>confidence</code> for one flow in about half a second. Route
+            <code>p_attack</code> to your alerting with the cut your alarm
+            budget allows; 0.5 was the benchmark's choice, not a rule.
+          </li>
+          <li>
+            <strong>Measure before you trust.</strong> Run
+            <code>jev-ids run</code> and <code>jev-ids metrics</code> on a
+            labeled split of your own flows. The numbers above are NSL-KDD's,
+            not yours.
+          </li>
+        </ol>
+        <p>
+          Only flow features leave your network, never payloads, but they do
+          leave it: every request goes to the gateway.
+        </p>
+      </section>
+
       <!-- The team: one card per person, the whole card a link to the GitHub profile.
            Portraits are served by GitHub, shown in grayscale until hovered. -->
       <section aria-labelledby="team-title">
