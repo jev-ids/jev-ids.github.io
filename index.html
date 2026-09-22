@@ -37,7 +37,9 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="style.css" />
+    <!-- The query string changes with every CSS edit, so Pages' 10 minute cache
+         never serves an old stylesheet with a new page. -->
+    <link rel="stylesheet" href="style.css?v=20260922a" />
     <!-- Browser UI (address bar, tab strip) follows the two palettes. -->
     <meta
       name="theme-color"
@@ -344,8 +346,8 @@ uv run jev-ids run --dataset data/nsl-kdd/dataset.json --detector jev --split sm
         </p>
       </section>
 
-      <!-- The team: one card per person, linking to their GitHub profile. Avatars are
-           served by GitHub from the same profiles. -->
+      <!-- The team: one card per person, the whole card a link to the GitHub profile.
+           Portraits are served by GitHub, shown in grayscale until hovered. -->
       <section aria-labelledby="team-title">
         <h2 id="team-title">the team</h2>
         <ul class="team">
@@ -354,14 +356,12 @@ uv run jev-ids run --dataset data/nsl-kdd/dataset.json --detector jev --split sm
               <img
                 src="https://github.com/paulosevero.png?size=160"
                 alt=""
-                width="64"
-                height="64"
+                width="88"
+                height="88"
                 loading="lazy"
               />
-              <span class="person">
-                <span class="person-name">Paulo Severo</span>
-                <span class="person-handle">@paulosevero</span>
-              </span>
+              <span class="person-name">Paulo Severo</span>
+              <span class="person-handle">@paulosevero</span>
             </a>
           </li>
           <li>
@@ -369,14 +369,12 @@ uv run jev-ids run --dataset data/nsl-kdd/dataset.json --detector jev --split sm
               <img
                 src="https://github.com/sequincozes.png?size=160"
                 alt=""
-                width="64"
-                height="64"
+                width="88"
+                height="88"
                 loading="lazy"
               />
-              <span class="person">
-                <span class="person-name">Silvio Quincozes</span>
-                <span class="person-handle">@sequincozes</span>
-              </span>
+              <span class="person-name">Silvio Quincozes</span>
+              <span class="person-handle">@sequincozes</span>
             </a>
           </li>
           <li>
@@ -384,14 +382,12 @@ uv run jev-ids run --dataset data/nsl-kdd/dataset.json --detector jev --split sm
               <img
                 src="https://github.com/amandadiasdev.png?size=160"
                 alt=""
-                width="64"
-                height="64"
+                width="88"
+                height="88"
                 loading="lazy"
               />
-              <span class="person">
-                <span class="person-name">Amanda Dias</span>
-                <span class="person-handle">@amandadiasdev</span>
-              </span>
+              <span class="person-name">Amanda Dias</span>
+              <span class="person-handle">@amandadiasdev</span>
             </a>
           </li>
         </ul>

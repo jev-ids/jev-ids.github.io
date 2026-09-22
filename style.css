@@ -377,11 +377,12 @@ tbody strong {
   }
 }
 
-/* Team cards: avatar, name and GitHub handle, the whole card one link. The
-   border lights up in phosphor on hover and focus. */
+/* Team cards: portrait, name and handle stacked and centered, equal cards in a
+   row. Portraits sit in grayscale and the border stays dim until hover or
+   focus, when both turn to color and the card lifts a little. */
 .team {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
   margin: 24px 0 0;
   padding: 0;
@@ -394,34 +395,44 @@ tbody strong {
 }
 
 .team a {
-  display: flex;
-  gap: 14px;
-  align-items: center;
+  display: block;
   height: 100%;
-  padding: 14px 16px;
+  padding: 28px 20px 24px;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 8px;
   color: var(--text);
+  text-align: center;
   text-decoration: none;
+  transition:
+    border-color 0.2s,
+    transform 0.2s;
 }
 
 .team a:hover,
 .team a:focus-visible {
   border-color: var(--phosphor);
+  transform: translateY(-2px);
 }
 
 .team img {
-  flex: none;
-  width: 56px;
-  height: 56px;
-  border: 1px solid var(--line);
+  display: block;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 16px;
+  border: 2px solid var(--line);
   border-radius: 50%;
   background: var(--bg);
+  filter: grayscale(1);
+  transition:
+    border-color 0.2s,
+    filter 0.2s;
 }
 
-.person {
-  min-width: 0;
+.team a:hover img,
+.team a:focus-visible img {
+  border-color: var(--phosphor);
+  filter: none;
 }
 
 .person-name {
@@ -431,9 +442,21 @@ tbody strong {
 
 .person-handle {
   display: block;
-  margin-top: 2px;
+  margin-top: 4px;
   color: var(--phosphor);
   font: 500 13px/1.3 var(--mono);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team a,
+  .team img {
+    transition: none;
+  }
+
+  .team a:hover,
+  .team a:focus-visible {
+    transform: none;
+  }
 }
 
 /* Footer: the independence notice and the links again. The notice may run the
