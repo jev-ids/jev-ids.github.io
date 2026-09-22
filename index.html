@@ -39,7 +39,7 @@
 
     <!-- The query string changes with every CSS edit, so Pages' 10 minute cache
          never serves an old stylesheet with a new page. -->
-    <link rel="stylesheet" href="style.css?v=20260922a" />
+    <link rel="stylesheet" href="style.css?v=20260922b" />
     <!-- Browser UI (address bar, tab strip) follows the two palettes. -->
     <meta
       name="theme-color"
@@ -83,21 +83,38 @@
           <span class="nowrap">with no text to parse.</span>
         </p>
         <p class="headline">
-          Benchmarked on NSL-KDD against GPT-5.6 and a Random Forest. 4.8×
-          faster, 3.8× cheaper and 1.5× better at catching zero-day attacks than
-          the LLM. 15× fewer false alarms than the forest.
+          Put to the test on NSL-KDD, the classic intrusion detection benchmark,
+          against an LLM (GPT-5.6) and a Random Forest.
         </p>
+        <ul class="stats" aria-label="Headline results at k = 1">
+          <li><strong>4.8×</strong> <span>faster than GPT-5.6</span></li>
+          <li><strong>3.8×</strong> <span>cheaper than GPT-5.6</span></li>
+          <li>
+            <strong>1.5×</strong>
+            <span>more zero-day attacks caught than GPT-5.6</span>
+          </li>
+          <li>
+            <strong>15×</strong>
+            <span>fewer false alarms than a Random Forest</span>
+          </li>
+        </ul>
 
         <pre
           class="terminal"
           role="group"
           tabindex="0"
-          aria-label="One Jev IDS request and its typed answers"
-        ><code><span class="c">1 flow in. 1 TypeSafe request. 2 typed questions.</span>
-is_attack   noul     Is the connection an intrusion attempt?   <span class="a">→ 0.82</span>
-category    choice   Which category does it belong to?         <span class="a">→ dos, confidence 0.84</span>
-<span class="c">the verdict is p_attack ≥ 0.5, the same cut for every detector</span>
-verdict     <span class="a">attack</span></code></pre>
+          aria-label="One Jev IDS request: the input flow, the two typed questions and the typed answers"
+        ><code><span class="c">input</span>
+flow        one connection record from NSL-KDD, plus k labeled examples
+
+<span class="c">request: two typed questions to jev</span>
+is_attack   noul     Is the connection an intrusion attempt?
+category    choice   Which category does it belong to?
+
+<span class="c">output</span>
+is_attack   <span class="a">→ 0.82</span>
+category    <span class="a">→ dos, confidence 0.84</span>
+verdict     <span class="a">→ attack</span>   <span class="c">p_attack ≥ 0.5, the same cut for every detector</span></code></pre>
       </section>
 
       <!-- The request: what a System One Model is and what Jev IDS does with it. -->
@@ -115,21 +132,24 @@ verdict     <span class="a">attack</span></code></pre>
              row of the pilot run, the same ones printed in the hero block. -->
         <ol class="flow" aria-label="How one verdict is produced">
           <li>
-            <h3><span class="step-index">01</span>one flow</h3>
+            <span class="c step-label">input</span>
+            <h3>one flow</h3>
             <p>
               The monitoring record of a single connection: duration, protocol,
               service, bytes in and out.
             </p>
           </li>
           <li>
-            <h3><span class="step-index">02</span>one request</h3>
+            <span class="c step-label">jev</span>
+            <h3>one request</h3>
             <p>
               State: the instructions, a few labeled examples and the flow.
               Questions: <code>is_attack</code> and <code>category</code>.
             </p>
           </li>
           <li>
-            <h3><span class="step-index">03</span>one verdict</h3>
+            <span class="c step-label">output</span>
+            <h3>one verdict</h3>
             <p class="answers">
               <span class="a">attack</span> · p_attack 0.82<br /><span class="a"
                 >dos</span

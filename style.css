@@ -181,6 +181,7 @@ h3 {
 .lede {
   max-width: 34em;
   font-size: clamp(17px, 2.4vw, 20px);
+  text-wrap: pretty;
 }
 
 .headline {
@@ -191,6 +192,36 @@ h3 {
 
 .nowrap {
   white-space: nowrap;
+}
+
+/* Headline ratios: a big phosphor number over a short grey label, four in a
+   row when there is room, two by two on a phone. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px 24px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stats li {
+  max-width: none;
+  margin: 0;
+}
+
+.stats strong {
+  display: block;
+  color: var(--phosphor);
+  font: 700 clamp(26px, 4vw, 32px) / 1.1 var(--mono);
+}
+
+.stats span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 p,
@@ -339,10 +370,10 @@ tbody strong {
   margin: 0 0 8px;
 }
 
-.step-index {
-  margin-right: 10px;
-  color: var(--phosphor);
-  font-weight: 500;
+.step-label {
+  display: block;
+  margin-bottom: 6px;
+  font: 500 12px/1.4 var(--mono);
 }
 
 .flow p {
