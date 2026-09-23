@@ -72,8 +72,8 @@
     <main id="top">
       <!-- Hero: the display line, the tagline, the headline result, and one real
            request shown the way the CLI prints it. The headline ratios come from the
-           pilot table below: 2,410 / 504 ms, $283 / $74, novel recall 0.838 / 0.547,
-           and 362 / 24 false alarms at k = 1. -->
+           paper table below at k = 1: 2,421 / 315 ms, $1,651 / $74, precision 0.942 / 0.953,
+           and 764 / 43 false alarms on 874 benign flows. -->
       <section class="hero" aria-labelledby="hero-title">
         <h1 id="hero-title">one flow.<br />one request.<br />one verdict.</h1>
         <p class="lede">
@@ -84,26 +84,32 @@
         </p>
         <p class="headline">
           Put to the test on NSL-KDD, the classic intrusion detection benchmark,
-          against an LLM (GPT-5.6 Luna) and a Random Forest.
+          against an LLM (Gemini 3.6 Flash), a Random Forest and an Isolation
+          Forest: 2,000 flows, three seeds, k from 0 to 8.
         </p>
         <ul class="stats" aria-label="Headline results at k = 1">
           <li>
-            <strong>4.8×</strong>
-            <span>faster per verdict<br />than GPT-5.6 Luna</span>
+            <strong>7.7×</strong>
+            <span>faster per verdict<br />than Gemini 3.6 Flash</span>
           </li>
           <li>
-            <strong>3.8×</strong>
-            <span>cheaper per verdict<br />than GPT-5.6 Luna</span>
+            <strong>22×</strong>
+            <span>cheaper per verdict<br />than Gemini 3.6 Flash</span>
           </li>
           <li>
-            <strong>1.5×</strong>
-            <span>more zero-day attacks<br />caught than GPT-5.6 Luna</span>
+            <strong>0.95</strong>
+            <span>precision, the same<br />as Gemini 3.6 Flash</span>
           </li>
           <li>
-            <strong>15×</strong>
+            <strong>18×</strong>
             <span>fewer false alarms<br />than a Random Forest</span>
           </li>
         </ul>
+        <p class="headline">
+          The LLM is the better detector on F1, 0.880 against 0.856 at k = 1 and
+          ahead at every k. Jev is second, at a fraction of the time and cost,
+          and catches more zero-day attacks than the LLM from k = 1 to k = 8.
+        </p>
 
         <pre
           class="terminal"
@@ -135,7 +141,7 @@ verdict     <span class="a">→ attack</span>   <span class="c">p_attack ≥ 0.5
         </p>
 
         <!-- The three steps echo the display line. The example values are the first
-             row of the pilot run, the same ones printed in the hero block. -->
+             row of a real run; the ratios in the hero block come from the paper table. -->
         <ol class="flow" aria-label="How one verdict is produced">
           <li>
             <span class="c step-label">input</span>
@@ -177,21 +183,26 @@ verdict     <span class="a">→ attack</span>   <span class="c">p_attack ≥ 0.5
           state, in one round trip.
         </p>
         <p>
-          Two baselines follow the same protocol: an LLM agent with a JSON
-          output schema and a scikit-learn Random Forest. Same frozen split,
-          same examples, same seeds.
+          Three baselines follow the same protocol: an LLM agent with a JSON
+          output schema, a scikit-learn Random Forest trained on the same
+          examples, and an Isolation Forest fitted on benign traffic alone. Same
+          frozen split, same examples, same seeds.
         </p>
       </section>
 
-      <!-- Evidence: the pilot table verbatim, the paired comparison and the limits.
-           Every number here is in the README or in the pilot predictions. -->
+      <!-- Evidence: the paper table, the paired comparisons and the limits.
+           Every number here is in the README, docs/results.md or results/paper. -->
       <section aria-labelledby="evidence-title">
         <h2 id="evidence-title">evidence</h2>
         <p>
-          Pilot split of NSL-KDD: 300 flows, 160 of them attacks and 39 of those
-          of a kind absent from KDDTrain+. Three seeds of examples, so 900
-          predictions per detector and k. Means over the three seeds, from the
-          runs of 2026-09-21.
+          Paper split of NSL-KDD: 2,000 flows, 1,126 of them attacks and 300 of
+          those zero-day, of a kind absent from the example pool. Three seeds of
+          examples, so 6,000 predictions per detector and k. Means over the
+          three seeds, from the runs of 2026-09-22; the full tables and figures
+          are in
+          <a href="https://github.com/jev-ids/jev-ids/blob/main/docs/results.md"
+            >docs/results.md</a
+          >.
         </p>
 
         <!-- The table scrolls inside its own box on narrow screens, so eight columns never
@@ -204,7 +215,7 @@ verdict     <span class="a">→ attack</span>   <span class="c">p_attack ≥ 0.5
         >
           <table>
             <caption id="evidence-table-title">
-              pilot split of NSL-KDD · mean of three seeds
+              paper split of NSL-KDD · mean of three seeds
             </caption>
             <thead>
               <tr>
@@ -213,7 +224,8 @@ verdict     <span class="a">→ attack</span>   <span class="c">p_attack ≥ 0.5
                 <th scope="col" class="num">f1</th>
                 <th scope="col" class="num">precision</th>
                 <th scope="col" class="num">recall</th>
-                <th scope="col" class="num">novel recall</th>
+                <th scope="col" class="num">zero-day recall</th>
+                <th scope="col" class="num">false alarms / 874</th>
                 <th scope="col" class="num">latency</th>
                 <th scope="col" class="num">cost / 1M flows</th>
               </tr>
@@ -222,28 +234,31 @@ verdict     <span class="a">→ attack</span>   <span class="c">p_attack ≥ 0.5
               <tr>
                 <th scope="row">
                   <span class="marker jev" aria-hidden="true"></span>jev
-                  <span class="mut">(typesafe-ai/jev)</span>
+                  <span class="mut">(jev-1.13.0)</span>
                 </th>
                 <td class="num">1</td>
-                <td class="num"><strong>0.859</strong></td>
-                <td class="num">0.941</td>
-                <td class="num">0.790</td>
-                <td class="num"><strong>0.838</strong></td>
-                <td class="num">504 ms</td>
+                <td class="num">0.856</td>
+                <td class="num"><strong>0.953</strong></td>
+                <td class="num">0.778</td>
+                <td class="num"><strong>0.747</strong></td>
+                <td class="num">43</td>
+                <td class="num">315 ms</td>
                 <td class="num">$74</td>
               </tr>
               <tr>
                 <th scope="row">
-                  <span class="marker llm" aria-hidden="true"></span>gpt-5.6
-                  <span class="mut">(gpt-5.6-luna)</span>
+                  <span class="marker llm" aria-hidden="true"></span>gemini 3.6
+                  flash
+                  <span class="mut">(gemini-3.6-flash)</span>
                 </th>
                 <td class="num">1</td>
-                <td class="num">0.776</td>
-                <td class="num">0.914</td>
-                <td class="num">0.675</td>
-                <td class="num">0.547</td>
-                <td class="num">2,410 ms</td>
-                <td class="num">$283</td>
+                <td class="num"><strong>0.880</strong></td>
+                <td class="num">0.942</td>
+                <td class="num">0.826</td>
+                <td class="num">0.713</td>
+                <td class="num">57</td>
+                <td class="num">2,421 ms</td>
+                <td class="num">$1,651</td>
               </tr>
               <tr>
                 <th scope="row">
@@ -252,10 +267,11 @@ verdict     <span class="a">→ attack</span>   <span class="c">p_attack ≥ 0.5
                   <span class="mut">(100 trees)</span>
                 </th>
                 <td class="num">1</td>
-                <td class="num">0.728</td>
-                <td class="num">0.574</td>
+                <td class="num">0.748</td>
+                <td class="num">0.598</td>
                 <td class="num">1.000</td>
                 <td class="num">1.000</td>
+                <td class="num">764</td>
                 <td class="num">3 ms</td>
                 <td class="num">local</td>
               </tr>
@@ -263,37 +279,71 @@ verdict     <span class="a">→ attack</span>   <span class="c">p_attack ≥ 0.5
                 <th scope="row">
                   <span class="marker jev" aria-hidden="true"></span>jev
                 </th>
-                <td class="num">2</td>
-                <td class="num">0.839</td>
-                <td class="num">0.929</td>
-                <td class="num">0.765</td>
-                <td class="num">0.761</td>
-                <td class="num">494 ms</td>
-                <td class="num">$106</td>
+                <td class="num">8</td>
+                <td class="num">0.854</td>
+                <td class="num">0.942</td>
+                <td class="num">0.783</td>
+                <td class="num"><strong>0.721</strong></td>
+                <td class="num">56</td>
+                <td class="num">335 ms</td>
+                <td class="num">$295</td>
               </tr>
               <tr>
                 <th scope="row">
-                  <span class="marker llm" aria-hidden="true"></span>gpt-5.6
+                  <span class="marker llm" aria-hidden="true"></span>gemini 3.6
+                  flash
                 </th>
-                <td class="num">2</td>
-                <td class="num">0.807</td>
-                <td class="num">0.930</td>
-                <td class="num">0.715</td>
-                <td class="num">0.573</td>
-                <td class="num">2,476 ms</td>
-                <td class="num">$399</td>
+                <td class="num">8</td>
+                <td class="num"><strong>0.881</strong></td>
+                <td class="num"><strong>0.949</strong></td>
+                <td class="num">0.823</td>
+                <td class="num">0.702</td>
+                <td class="num">50</td>
+                <td class="num">1,991 ms</td>
+                <td class="num">$3,035</td>
               </tr>
               <tr>
                 <th scope="row">
                   <span class="marker rf" aria-hidden="true"></span>random
                   forest
                 </th>
-                <td class="num">2</td>
-                <td class="num">0.766</td>
-                <td class="num">0.629</td>
-                <td class="num">0.990</td>
-                <td class="num">0.991</td>
-                <td class="num">2 ms</td>
+                <td class="num">8</td>
+                <td class="num">0.865</td>
+                <td class="num">0.794</td>
+                <td class="num">0.950</td>
+                <td class="num">0.912</td>
+                <td class="num">278</td>
+                <td class="num">3 ms</td>
+                <td class="num">local</td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <span class="marker rf" aria-hidden="true"></span>random
+                  forest
+                  <span class="mut">(whole pool)</span>
+                </th>
+                <td class="num">all</td>
+                <td class="num">0.765</td>
+                <td class="num">0.971</td>
+                <td class="num">0.631</td>
+                <td class="num">0.263</td>
+                <td class="num">24</td>
+                <td class="num">3 ms</td>
+                <td class="num">local</td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <span class="marker if" aria-hidden="true"></span>isolation
+                  forest
+                  <span class="mut">(whole pool)</span>
+                </th>
+                <td class="num">all</td>
+                <td class="num">0.761</td>
+                <td class="num">0.974</td>
+                <td class="num">0.624</td>
+                <td class="num">0.573</td>
+                <td class="num">21</td>
+                <td class="num">3 ms</td>
                 <td class="num">local</td>
               </tr>
             </tbody>
@@ -301,35 +351,39 @@ verdict     <span class="a">→ attack</span>   <span class="c">p_attack ≥ 0.5
         </div>
 
         <p>
-          Jev against the Random Forest at k = 1: of 900 paired verdicts, 439
-          differ. Jev is right in 338 of them and the forest in 101 (McNemar p ≈
-          6 × 10⁻³¹). A forest trained on five rows calls almost everything an
-          attack, which is why its recall is perfect and its precision is not:
-          on the 420 benign flows it raised 362 false alarms, Jev 24.
+          Jev against Gemini over all 6,000 paired verdicts at k = 1: 508
+          differ, Jev is right in 195 and Gemini in 313 (McNemar p &lt; 0.001);
+          Gemini leads at every k. On the 900 zero-day attacks at k = 1: 118
+          differ, Jev is right in 74 and Gemini in 44 (p = 0.007); Jev also
+          leads at k = 2, and the two are indistinguishable at k = 4 and 8. Jev
+          against the Random Forest over all flows at k = 1: 2,909 differ, Jev
+          is right in 2,161 (p &lt; 0.001). A forest trained on five rows calls
+          almost everything an attack, which is why its recall is perfect and
+          its precision is not: on the 874 benign flows it raised 764 false
+          alarms, Jev 43.
         </p>
 
         <h3>limits worth knowing</h3>
         <ul>
           <li>
-            Pilot numbers, taken to settle the protocol. Final results will come
-            from the disjoint <code>paper</code> split with k up to 16.
-            NF-UQ-NIDS-v2 has not run yet.
-          </li>
-          <li>
-            Latency is the wall clock of the successful HTTP call through the
-            Vercel AI Gateway. 1,350 of the 1,800 Jev rows needed a retry, and
-            retries are not counted.
-          </li>
-          <li>
             Cost is tokens times list price, not what was billed: $0.042 per
-            million input tokens for Jev, output free. Jev was free under a
-            promotion until 2026-09-25, and GPT-5.6 ran through the ChatGPT
-            Codex backend at the public API rate.
+            million input tokens for Jev, output free; $0.75 input and $3.75
+            output for Gemini through 2026-12-31, doubling on 2027-01-01, with
+            thinking tokens billed as output.
           </li>
           <li>
-            The gateway masks Jev's version as <code>typesafe-ai/jev</code>;
-            TypeSafe direct reports <code>jev-1.13.0</code>. The run date is the
-            only pin.
+            Gemini's latency was measured with five processes in parallel on a
+            congested day (transient 429, 500 and 504 answers, all repaired), so
+            it is a real-day figure, not a floor. Jev's is the wall clock of one
+            direct call to TypeSafe's API.
+          </li>
+          <li>
+            Gemini 3.x cannot switch thinking off; it ran at the lowest level,
+            about 200 reasoning tokens per flow.
+          </li>
+          <li>
+            Every number is NSL-KDD's. NF-UQ-NIDS-v2 has a card and a
+            preparation script and no run yet.
           </li>
           <li>
             Jev's <code>noul</code> answer carries no confidence; only the
@@ -349,8 +403,8 @@ verdict     <span class="a">→ attack</span>   <span class="c">p_attack ≥ 0.5
         ><code>git clone https://github.com/jev-ids/jev-ids.git
 cd jev-ids
 uv sync
-<span class="c">.env: AI_GATEWAY_API_KEY for Jev through the Vercel AI Gateway;</span>
-<span class="c">      DEEPSEEK_API_KEY and CHATGPT_CLIENT_ID only for the LLM baselines.</span></code></pre>
+<span class="c">.env: TYPESAFE_API_KEY for Jev. Gemini: gcloud auth application-default login,</span>
+<span class="c">      GOOGLE_GENAI_USE_VERTEXAI=true, GOOGLE_CLOUD_PROJECT, GOOGLE_CLOUD_LOCATION=global.</span></code></pre>
         <p>
           Download
           <a href="https://www.kaggle.com/datasets/hassan06/nslkdd">NSL-KDD</a>
@@ -374,12 +428,12 @@ uv run jev-ids run --dataset data/nsl-kdd/dataset.json --detector jev --split sm
 
       <!-- Bring your own flows: the research-prototype notice, where Jev sits beside a
            commercial IDS (an inline SVG on the site's own tokens) and
-           the six integration steps. The numbers are the pilot's at k = 1. -->
+           the six integration steps. The numbers are the paper split's at k = 1. -->
       <section aria-labelledby="byof-title">
         <h2 id="byof-title">bring your own flows</h2>
         <p>
           Jev IDS is an independent research prototype, not a product. Its
-          numbers come from one pilot on NSL-KDD. It can still sit inside a
+          numbers come from one benchmark, NSL-KDD. It can still sit inside a
           commercial solution, and this is how.
         </p>
 
@@ -439,15 +493,15 @@ uv run jev-ids run --dataset data/nsl-kdd/dataset.json --detector jev --split sm
           <li>
             <strong>Second opinion on alerts.</strong> Send Jev the flow behind
             each alert the signature engine raised. <code>p_attack</code> ranks
-            the queue, and the SOC reads the top first. In the pilot, Jev raised
-            24 false alarms on 420 benign flows where a Random Forest raised
-            362.
+            the queue, and the SOC reads the top first. On the paper split at k
+            = 1, Jev raised 43 false alarms on 874 benign flows where a Random
+            Forest raised 764.
           </li>
           <li>
             <strong>A net behind the signatures.</strong> Signatures miss what
             they have never seen. Sample the flows the engine passed as clean,
             or every flow to a critical asset, and let Jev judge them: it caught
-            84% of attacks of a kind absent from its examples.
+            75% of the zero-day attacks at k = 1, where the LLM caught 71%.
           </li>
           <li>
             <strong>A category for the playbook.</strong> The
@@ -470,9 +524,9 @@ uv run jev-ids run --dataset data/nsl-kdd/dataset.json --detector jev --split sm
         <h3>six steps</h3>
         <ol>
           <li>
-            <strong>Get a key.</strong> Jev is served through the Vercel AI
-            Gateway; set <code>AI_GATEWAY_API_KEY</code> in <code>.env</code>.
-            Pricing and terms are TypeSafe's and Vercel's.
+            <strong>Get a key.</strong> Jev is served by TypeSafe; set
+            <code>TYPESAFE_API_KEY</code> in <code>.env</code>. Pricing and
+            terms are TypeSafe's.
           </li>
           <li>
             <strong>Describe your flows.</strong> Write a dataset card like
@@ -492,7 +546,8 @@ uv run jev-ids run --dataset data/nsl-kdd/dataset.json --detector jev --split sm
           </li>
           <li>
             <strong>Pick examples.</strong> One labeled flow per category from
-            your own network is enough to start; k = 1 is what the pilot used.
+            your own network is enough to start; k = 1 is where the benchmark's
+            F1 reaches its plateau.
           </li>
           <li>
             <strong>Call the detector.</strong>
@@ -567,7 +622,7 @@ uv run jev-ids run --dataset data/nsl-kdd/dataset.json --detector jev --split sm
     <footer>
       <p>
         Jev IDS is an independent research project and is not affiliated with
-        <span class="nowrap">TypeSafe or Vercel.</span>
+        <span class="nowrap">TypeSafe or Google.</span>
       </p>
       <nav aria-label="Footer links">
         <a href="https://github.com/jev-ids/jev-ids">github</a>

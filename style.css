@@ -15,6 +15,7 @@
   --jev: #3dff8a;
   --llm: #ffb454;
   --rf: #6ec1ff;
+  --if: #e6c34a;
   --mono:
     "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --sans:
@@ -39,6 +40,7 @@
     --jev: #0b6b3a;
     --llm: #b36b00;
     --rf: #1f6fb2;
+    --if: #8a6d00;
   }
 }
 
@@ -397,6 +399,9 @@ tbody strong {
 
 .marker.rf {
   background: var(--rf);
+}
+.marker.if {
+  background: var(--if, var(--rf));
 }
 
 /* The request diagram: three surface cards, one per word of the display line,
